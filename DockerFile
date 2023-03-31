@@ -1,0 +1,12 @@
+FROM golang:1.18-alpine
+
+WORKDIR /app
+
+ADD . /app
+
+RUN go mod download
+RUN go build -o order-management
+
+EXPOSE 9000
+
+CMD [ "./order-management" ]
