@@ -1,12 +1,16 @@
-FROM golang:1.18-alpine
+# Use an official Golang runtime as a parent image
+FROM golang:1.17-alpine3.13
 
+# Set the working directory to /app
 WORKDIR /app
 
+# Copy the Go application source code to the container
 ADD . /app
 
+ENV SQL_URL=root:root@tcp(localhost:3306)/mysql
+
+# Build the Go application
 RUN go mod download
-RUN go build -o order-management
+RUN go build -o test
 
-EXPOSE 9000
-
-CMD [ "./order-management" ]
+CMD ["./test"]

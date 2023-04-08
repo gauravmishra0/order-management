@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
@@ -69,6 +70,16 @@ func (o *ordersDao) Connect() *sqlx.DB {
 		return nil
 	}
 	o.db = db
+	r, err := db.Exec(`CREATE TABLE IF NOT EXISTS orders (
+        id VARCHAR(36) NOT NULL PRIMARY KEY,
+        status VARCHAR(20) NOT NULL,
+        items JSON NOT NULL DEFAULT (JSON_OBJECT()),
+        total DECIMAL(10,2) NOT NULL,
+        currencyUnit VARCHAR(3) NOT NULL
+    )`)
+	fmt.Print(r)
+	if err != nil {
+	}
 
 	return db
 }

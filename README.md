@@ -13,7 +13,12 @@ This API is built using the following technologies:
 
 ## Installation
 ```shell
-export SQL_URL="db_url"
+docker run --name mysql -d \
+    -p 3307:3306 \
+    -e MYSQL_ROOT_PASSWORD=root \
+    --restart unless-stopped \
+    mysql:8
+export SQL_URL="root:root@tcp(localhost:3307)/mysql"
 go run main.go
 ```
 
@@ -30,7 +35,9 @@ Request Body
 * status - The status of the order. Defaults to "pending".
 
 ```shell
-{
+curl --location 'http://localhost:8080/api/v1/orders' \
+--header 'Content-Type: application/json' \
+--data '{
     "items": [
         {
             "description": "Product A",
@@ -46,7 +53,7 @@ Request Body
     "total": 35.0,
     "currencyUnit": "USD",
     "status": "processing"
-}
+}'
 
 ```
 
@@ -69,6 +76,9 @@ Request Body
 
 * id (required) - The ID of the order to retrieve.
 
+```shell
+curl --location 'http://localhost:8080/api/v1/orders'
+```
 
 Response Body
 
@@ -106,7 +116,9 @@ Response Body
 `GET /orders`
 
 Query with
-
+```shell
+curl --location 'http://localhost:8080/api/v1/orders?status=processing'
+```
 * status - Filter orders by status.
 * sortBy - Sort orders by field.
 * sortOrder - Sort order direction. Defaults to "asc".
@@ -147,6 +159,13 @@ Response Body
 **Update Order**
 `PUT /orders/:id`
 
+```shell
+curl --location --request PUT 'http://localhost:8080/api/v1/orders/:id' \
+--header 'Content-Type: application/json' \
+--data '{
+    "status": "done"
+}'
+```
 Request Body
 
 * status - Filter orders by status.
